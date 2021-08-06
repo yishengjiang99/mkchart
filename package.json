@@ -1,0 +1,15 @@
+{
+  "name": "mk-60fps",
+  "version": "1.0.1",
+  "description": "previously 'draw-canvas-60fps(performantly)'",
+  "main": "dist/chart.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Yisheng Jiang",
+  "license": "ISC",
+  "dependencies": {
+    "mkdiv": "^2.0.3"
+  }
+}
