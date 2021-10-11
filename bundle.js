@@ -1,6 +1,40 @@
-import { mkdiv } from "../node_modules/mkdiv/mkdiv.js";
-export const WIDTH = 480; // / 2,
-export const HEIGHT = 320;
+function mkdiv(type, attr, children) {
+  if (arguments.length == 1) return mkdiv(type, {}, "");
+  if (
+    arguments.length == 2 &&
+    (Array.isArray(attr) || typeof attr === "string")
+  ) {
+    return mkdiv(type, {}, arguments[1]);
+  }
+  if (arguments.length == 2) {
+    return mkdiv(type, arguments[1], []);
+  }
+  const div = document.createElement(type);
+  for (const key in attr) {
+    if (key.match(/on(.*)/)) {
+      div.addEventListener(key.match(/on(.*)/)[1], attr[key]);
+    } else {
+      div.setAttribute(key, attr[key]);
+    }
+  }
+  const charray = !Array.isArray(children) ? [children] : children;
+  charray.forEach((c) => {
+    typeof c == "string" ? (div.innerHTML += c) : div.append(c);
+  });
+  div.attachTo = function (parent) {
+    if (parent) parent.append(this);
+    return this;
+  };
+  div.wrapWith = function (tag) {
+    const parent = mkdiv(tag);
+    parent.append(this);
+    return parent;
+  };
+  return div;
+}
+
+const WIDTH = 480; // / 2,
+const HEIGHT = 320;
 function get_w_h(canvasCtx) {
     return [
         canvasCtx.canvas.getAttribute("width")
@@ -11,7 +45,7 @@ function get_w_h(canvasCtx) {
             : HEIGHT,
     ];
 }
-export function resetCanvas(c) {
+function resetCanvas(c) {
     if (!c)
         return;
     const canvasCtx = c;
@@ -20,14 +54,13 @@ export function resetCanvas(c) {
     canvasCtx.fillStyle = "black";
     canvasCtx.fillRect(0, 0, _width, _height);
 }
-export function chart(canvasCtx, dataArray) {
+function chart(canvasCtx, dataArray) {
     resetCanvas(canvasCtx);
     const [_width, _height] = get_w_h(canvasCtx);
-    let max = 0, min = 0, x = 0;
+    let max = 0, x = 0;
     let iWIDTH = _width / dataArray.length; //strokeText(`r m s : ${sum / bufferLength}`, 10, 20, 100)
     for (let i = 1; i < dataArray.length; i++) {
         max = dataArray[i] > max ? dataArray[i] : max;
-        min = -1 * max; /// dataArray[i] < min ? dataArray[i] : min;
     }
     canvasCtx.beginPath();
     canvasCtx.lineWidth = 1;
@@ -46,7 +79,7 @@ export function chart(canvasCtx, dataArray) {
     canvasCtx.restore();
     canvasCtx.font = "1em Arial";
 }
-export function mkcanvas(params = {}) {
+function mkcanvas(params = {}) {
     const { width, height, container, title } = Object.assign(params, {
         container: document.body,
         title: "",
@@ -66,7 +99,7 @@ export function mkcanvas(params = {}) {
     canvas.ondblclick = () => resetCanvas(canvasCtx);
     return canvasCtx;
 }
-export async function renderFrames(canvsCtx, arr, fps = 60, samplesPerFrame = 1024) {
+async function renderFrames(canvsCtx, arr, fps = 60, samplesPerFrame = 1024) {
     let nextframe, offset = 0;
     while (arr.length > offset) {
         if (!nextframe || performance.now() > nextframe) {
@@ -103,3 +136,5 @@ export async function renderFrames(canvsCtx, arr, fps = 60, samplesPerFrame = 10
         chart(canvsCtx, arr.slice(offset, offset + samplesPerFrame));
     });
 }
+
+export { HEIGHT, WIDTH, chart, mkcanvas, renderFrames, resetCanvas };

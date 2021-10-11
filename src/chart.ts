@@ -1,6 +1,4 @@
-//@ts-ignore
 import { mkdiv } from "../node_modules/mkdiv/mkdiv.js";
-
 export const WIDTH = 480; // / 2,
 export const HEIGHT = 320;
 function get_w_h(canvasCtx: CanvasRenderingContext2D) {
@@ -121,7 +119,8 @@ export async function renderFrames(
           offset = (arr.length * parseInt(value)) / parseInt(max);
           chart(canvsCtx, arr.slice(offset, offset + samplesPerFrame));
         },
-      }).attachTo(canvsCtx.canvas.parentElement);
+      });
+    canvsCtx.canvas.parentElement!.appendChild(slider);
   }
 
   canvsCtx.canvas.addEventListener("click", onclick);
