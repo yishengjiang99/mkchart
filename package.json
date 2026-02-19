@@ -3,12 +3,43 @@
   "version": "1.0.1",
   "main": "bundle.js",
   "scripts": {
-    "build": "tsc && echo 'y' |npx rollup dist/chart.js > bundle.js"
+    "build": "tsc && echo 'y' |npx rollup dist/chart.js > bundle.js",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "jest-canvas-mock"
+    ],
+    "moduleNameMapper": {
+      "\\.\\./node_modules/mkdiv/mkdiv\\.js": "<rootDir>/__mocks__/mkdiv.js"
+    },
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "module": "commonjs",
+            "strict": false,
+            "noImplicitAny": false
+          }
+        }
+      ]
+    }
   },
   "keywords": [],
   "author": "Yisheng Jiang",
   "license": "ISC",
   "dependencies": {
     "mkdiv": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-util": "^29.7.0",
+    "ts-jest": "^29.3.0"
   }
 }
