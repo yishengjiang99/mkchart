@@ -13,7 +13,6 @@
       "jest-canvas-mock"
     ],
     "moduleNameMapper": {
-      "\\.\\./node_modules/mkdiv/mkdiv\\.js": "<rootDir>/__mocks__/mkdiv.js"
     },
     "transform": {
       "^.+\\.tsx?$": [
@@ -32,7 +31,6 @@
   "author": "Yisheng Jiang",
   "license": "ISC",
   "dependencies": {
-    "mkdiv": "^3.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
