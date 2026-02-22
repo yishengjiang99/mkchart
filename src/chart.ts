@@ -1,4 +1,3 @@
-import { mkdiv } from "../node_modules/mkdiv/mkdiv.js";
 export const WIDTH = 480; // / 2,
 export const HEIGHT = 320;
 function get_w_h(canvasCtx: CanvasRenderingContext2D) {
@@ -77,7 +76,13 @@ export function mkcanvas(params: CanvasParams = {}) {
   canvasCtx.fillStyle = "black";
   canvasCtx.font = "2em";
 
-  const wrap = mkdiv("div", {}, [title ? mkdiv("h5", {}, title) : "", canvas]);
+  const wrap = document.createElement("div");
+  if (title) {
+    const h5 = document.createElement("h5");
+    h5.textContent = title;
+    wrap.append(h5);
+  }
+  wrap.append(canvas);
 
   container.append(wrap);
   canvas.ondblclick = () => resetCanvas(canvasCtx);
@@ -108,18 +113,20 @@ export async function renderFrames(
     );
     const slider =
       existingSlider ||
-      mkdiv("input", {
-        type: "range",
-        min: 0,
-        max: 100,
-        value: 100,
-        step: 0,
-        oninput: (e: InputEvent) => {
+      (() => {
+        const el = document.createElement("input");
+        el.setAttribute("type", "range");
+        el.setAttribute("min", "0");
+        el.setAttribute("max", "100");
+        el.setAttribute("value", "100");
+        el.setAttribute("step", "0");
+        el.addEventListener("input", (e: InputEvent) => {
           const { max, value } = e.target as HTMLInputElement;
           offset = (arr.length * parseInt(value)) / parseInt(max);
           chart(canvsCtx, arr.slice(offset, offset + samplesPerFrame));
-        },
-      });
+        });
+        return el;
+      })();
     canvsCtx.canvas.parentElement!.appendChild(slider);
   }
 
